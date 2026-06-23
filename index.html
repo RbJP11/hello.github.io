@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Do You Wanna Build a Snowman</title>
-    <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff; /* Clean white background */
+            background-color: #ffffff; 
             text-align: center;
             padding-top: 10vh;
-            color: #4a148c; /* Deep purple text */
-            overflow: hidden; /* Prevents scrollbars when the button runs away */
+            color: #4a148c; 
+            overflow: hidden; 
             margin: 0;
+            /* Prevents highlight box on mobile tap */
+            -webkit-tap-highlight-color: transparent; 
         }
 
         /* --- Envelope Styles --- */
@@ -30,7 +31,7 @@
         .envelope-text {
             font-size: 24px;
             font-weight: bold;
-            color: #1e88e5; /* Vibrant Blue */
+            color: #1e88e5; 
             margin-bottom: 40px;
             animation: bounce 2s infinite;
         }
@@ -45,7 +46,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            background: #8e24aa; /* Vibrant Purple Base */
+            background: #8e24aa; 
             border-radius: 0 0 10px 10px;
             box-shadow: 0 15px 40px rgba(142, 36, 170, 0.3);
         }
@@ -58,7 +59,7 @@
             height: 0;
             border-left: 160px solid transparent;
             border-right: 160px solid transparent;
-            border-top: 120px solid #1e88e5; /* Vibrant Blue Flap */
+            border-top: 120px solid #1e88e5; 
             transform-origin: top;
             transition: transform 0.6s ease, z-index 0.2s;
             z-index: 4;
@@ -70,9 +71,9 @@
             left: 0;
             width: 0;
             height: 0;
-            border-left: 160px solid #9c27b0; /* Lighter Purple Left/Right */
+            border-left: 160px solid #9c27b0; 
             border-right: 160px solid #9c27b0;
-            border-bottom: 110px solid #7b1fa2; /* Darker Purple Bottom */
+            border-bottom: 110px solid #7b1fa2; 
             border-top: 90px solid transparent;
             z-index: 3;
             border-radius: 0 0 10px 10px;
@@ -84,10 +85,10 @@
             left: 10px;
             right: 10px;
             height: 180px;
-            background: linear-gradient(145deg, #ffffff, #e3f2fd); /* White to light blue */
+            background: linear-gradient(145deg, #ffffff, #e3f2fd); 
             z-index: 2;
             border-radius: 10px 10px 0 0;
-            transition: transform 0.8s ease 0.3s; /* Waits for flap to open */
+            transition: transform 0.8s ease 0.3s; 
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
@@ -95,7 +96,6 @@
             font-size: 50px;
         }
 
-        /* Animation classes added by JS */
         #envelope-wrapper.open .flap {
             transform: rotateX(180deg);
             z-index: 1;
@@ -117,6 +117,8 @@
             align-items: center;
             flex-direction: column;
             width: 100%;
+            box-sizing: border-box;
+            padding: 0 20px; /* Padding for mobile edges */
         }
 
         .fade-in-up {
@@ -130,12 +132,18 @@
         
         .container {
             margin-bottom: 30px;
-            padding: 40px;
+            padding: 40px 30px;
             background: linear-gradient(145deg, #f3e5f5, #e3f2fd);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(74, 20, 140, 0.1);
             max-width: 600px;
-            width: 90%;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-top: 0;
         }
 
         .hidden {
@@ -145,21 +153,25 @@
         .buttons {
             margin-top: 30px;
             position: relative;
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Adds space between buttons */
+            flex-wrap: wrap;
         }
 
         button {
             padding: 12px 35px;
             font-size: 20px;
-            margin: 10px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             font-weight: bold;
+            touch-action: manipulation; /* Improves tap responsiveness */
         }
 
         .yes-btn {
-            background-color: #1e88e5; /* Vibrant Blue */
+            background-color: #1e88e5; 
             color: white;
             box-shadow: 0 4px 15px rgba(30, 136, 229, 0.4);
         }
@@ -170,9 +182,10 @@
         }
 
         .no-btn {
-            background-color: #8e24aa; /* Vibrant Purple */
+            background-color: #8e24aa; 
             color: white;
             box-shadow: 0 4px 15px rgba(142, 36, 170, 0.4);
+            z-index: 100; /* Keeps it on top when running away */
         }
 
         .popup {
@@ -187,11 +200,27 @@
             font-weight: bold;
             color: #8e24aa;
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 480px) {
+            body { padding-top: 15vh; }
+            
+            /* Scale down envelope for smaller screens */
+            #envelope-wrapper { width: 280px; height: 180px; }
+            .flap { border-left: 140px solid transparent; border-right: 140px solid transparent; border-top: 105px solid #1e88e5; }
+            .envelope-front { border-left: 140px solid #9c27b0; border-right: 140px solid #9c27b0; border-bottom: 95px solid #7b1fa2; border-top: 85px solid transparent; }
+            .envelope-text { font-size: 20px; }
+            
+            /* Scale down text and padding */
+            .container { padding: 30px 20px; }
+            h1 { font-size: 22px; }
+            button { font-size: 18px; padding: 10px 25px; }
+            .popup { font-size: 22px; padding: 30px 20px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- The Envelope Screen -->
     <div id="envelope-wrapper" onclick="openEnvelope()">
         <div class="envelope-text">Click to Open 💌</div>
         <div class="envelope">
@@ -201,58 +230,49 @@
         </div>
     </div>
 
-    <!-- The Actual Questions (Hidden until envelope opens) -->
     <div id="main-content" class="hidden">
         
-        <!-- Question 1 -->
         <div class="container" id="question-1">
-            <h1>Hola Senorita, Are you free tomorrow?</h1>
+            <h1>Hola Senorita, are you free tomorrow?</h1>
             <div class="buttons">
                 <button class="no-btn evasive-btn" id="runaway-btn">No</button>
                 <button class="yes-btn" onclick="showQuestion2()">Yes</button>
             </div>
         </div>
 
-        <!-- Question 2 -->
         <div class="container hidden" id="question-2">
-            <h1>:0 whhaa no ways me too so I'm going to watch a movie, come watch it with me.</h1>
+            <h1>Awesome! I'm going to watch a movie, come watch it with me.</h1>
             <div class="buttons">
                 <button class="no-btn evasive-btn" id="runaway-btn-2">No</button>
                 <button class="yes-btn" onclick="showPopup()">Yes</button>
             </div>
         </div>
 
-        <!-- Final Popup -->
         <div class="popup hidden" id="popup">
-            <p>Awesome, I'm glad⛄🎥🍿</p>
+            <p>Thank you Very Much! ⛄🎥🍿</p>
         </div>
 
     </div>
 
     <script>
-        // --- 1. Envelope Animation Logic ---
         function openEnvelope() {
             const wrapper = document.getElementById('envelope-wrapper');
             const mainContent = document.getElementById('main-content');
             
-            // 1. Open the flap and slide letter up
             wrapper.classList.add('open');
             
-            // 2. Wait 1.5 seconds, then fade out the envelope
             setTimeout(() => {
                 wrapper.classList.add('fade-out');
                 
-                // 3. After fading out, hide envelope completely and show questions
                 setTimeout(() => {
                     wrapper.classList.add('hidden');
                     mainContent.classList.remove('hidden');
-                    mainContent.classList.add('fade-in-up'); // Adds a bounce-up animation
-                }, 500); // 500ms fade transition time
+                    mainContent.classList.add('fade-in-up');
+                }, 500); 
 
-            }, 1500); // 1.5s to admire the opening animation
+            }, 1500); 
         }
 
-        // --- 2. Question Transition Functions ---
         function showQuestion2() {
             document.getElementById('question-1').classList.add('hidden');
             document.getElementById('question-2').classList.remove('hidden');
@@ -261,17 +281,18 @@
         function showPopup() {
             document.getElementById('question-2').classList.add('hidden');
             document.getElementById('popup').classList.remove('hidden');
-            
-            // Trigger Confetti!
             fireConfetti();
         }
 
-        // --- 3. Running Away Button Logic ---
         const runawayBtns = document.querySelectorAll('.evasive-btn');
 
         runawayBtns.forEach(btn => {
             btn.addEventListener('mouseover', moveButton);
-            btn.addEventListener('touchstart', moveButton);
+            // touchstart for mobile taps
+            btn.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // Prevents the actual tap from registering as a click
+                moveButton(e);
+            }, {passive: false});
         });
 
         function moveButton(e) {
@@ -280,17 +301,20 @@
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
             
-            const randomX = Math.floor(Math.random() * (windowWidth - btn.offsetWidth));
-            const randomY = Math.floor(Math.random() * (windowHeight - btn.offsetHeight));
+            // Safe padding ensures the button doesn't go off the edges of a small screen
+            const safePadding = 20; 
+            
+            // Calculate random coordinates within the safe boundaries
+            const randomX = Math.max(safePadding, Math.floor(Math.random() * (windowWidth - btn.offsetWidth - safePadding)));
+            const randomY = Math.max(safePadding, Math.floor(Math.random() * (windowHeight - btn.offsetHeight - safePadding)));
             
             btn.style.position = 'fixed';
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
         }
 
-        // --- 4. Confetti Logic ---
         function fireConfetti() {
-            var duration = 3 * 1000; // 3 seconds
+            var duration = 3 * 1000;
             var end = Date.now() + duration;
 
             (function frame() {
@@ -299,14 +323,16 @@
                     angle: 60,
                     spread: 55,
                     origin: { x: 0 },
-                    colors: ['#ffffff', '#8e24aa', '#1e88e5'] // White, Purple, Blue
+                    colors: ['#ffffff', '#8e24aa', '#1e88e5'],
+                    zIndex: 1000 // Ensures confetti is above mobile UI
                 });
                 confetti({
                     particleCount: 5,
                     angle: 120,
                     spread: 55,
                     origin: { x: 1 },
-                    colors: ['#ffffff', '#8e24aa', '#1e88e5']
+                    colors: ['#ffffff', '#8e24aa', '#1e88e5'],
+                    zIndex: 1000
                 });
 
                 if (Date.now() < end) {
